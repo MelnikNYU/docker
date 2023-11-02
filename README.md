@@ -9,25 +9,31 @@ root@hp-gb:/home/mn# cd simple_image3/
 root@hp-gb:/home/mn/simple_image3# nano docker-compose.yml
 version: '3'
 services:
+  db:
+    image: mysql:5.7
+    restart: unless-stopped
+    volumes:
+      - dbdata:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: 1234
   wordpress:
+    depend_on:
+      - db
     image: wordpress:latest
     ports:
       - 6080:8080
-    volumes:
-      - ./wordpress:/var/www/html
     environment:
       WORDPRESS_DB_HOST: db
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_DB_PASSWORD: 1234
       WORDPRESS_DB_NAME: wordpress
-  db:
-    image: mysql:5.7
-    environment:
-      MYSQL_ROOT_PASSWORD: 1234
-      MYSQL_DATABASE: wordpress
     volumes:
-      - ./db_data:/var/lib/mysql
+      - ./wordpress:/var/www/html
 root@hp-gb:/home/mn/simple_image3# docker-compose up -d
+
  
 
 
